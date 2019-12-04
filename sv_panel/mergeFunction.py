@@ -4,7 +4,7 @@ from __future__ import print_function
 import gzip
 
 
-def organizeControl(inputFilePath, outputFilePath, check_margin_size, f_insert_seq=False):
+def organizeControl(inputFilePath, outputFilePath, check_margin_size):
 
     """
         script for organizing control junction information
@@ -25,7 +25,6 @@ def organizeControl(inputFilePath, outputFilePath, check_margin_size, f_insert_s
         for key in sorted(mergedBedpeInfo):
 
             tchr1, tstart1, tend1, tchr2, tstart2, tend2, tdir1, tdir2, inseq = key.split('\t')
-            inseqSize = len(inseq) if f_insert_seq else inseq
             tsamples, treadNums = mergedBedpeInfo[key].split('\t')
 
             if tend1 == "18606952": print(key)
@@ -34,7 +33,7 @@ def organizeControl(inputFilePath, outputFilePath, check_margin_size, f_insert_s
             if F[0] != tchr1 or int(F[2]) > int(tend1) + check_margin_size:
 
                 # treatment for flush!!
-                print('\t'.join([tchr1, tstart1, tend1, tchr2, tstart2, tend2, "controlJunction_" + str(num), inseqSize, tdir1, tdir2, tsamples, treadNums]), file = hOUT)
+                print('\t'.join([tchr1, tstart1, tend1, tchr2, tstart2, tend2, "controlJunction_" + str(num), inseq, tdir1, tdir2, tsamples, treadNums]), file = hOUT)
                 num = num + 1
 
                 delList.append(key)
@@ -49,11 +48,11 @@ def organizeControl(inputFilePath, outputFilePath, check_margin_size, f_insert_s
                     flag = 0
                     # detailed check on the junction position considering inserted sequences
                     if F[8] == "+":
-                        expectedDiffSize = (int(F[2]) - int(tend1)) + (int(F[7]) - int(inseqSize))
+                        expectedDiffSize = (int(F[2]) - int(tend1)) + (int(len(F[7])) - int(len(inseq)))
                         if (F[9] == "+" and int(F[5]) == int(tend2) - int(expectedDiffSize)) or (F[9] == "-" and int(F[5]) == int(tend2) + int(expectedDiffSize)):
                             flag = 1
                     else:
-                        expectedDiffSize = (int(F[2]) - int(tend1)) + (int(inseqSize) - int(F[7]))
+                        expectedDiffSize = (int(F[2]) - int(tend1)) + (int(len(inseq)) - int(len(F[7])))
                         if (F[9] == "+" and int(F[5]) == int(tend2) + int(expectedDiffSize)) or (F[9] == "-" and int(F[5]) == int(tend2) - int(expectedDiffSize)):
                             flag = 1
 
@@ -65,7 +64,7 @@ def organizeControl(inputFilePath, outputFilePath, check_margin_size, f_insert_s
                         newSamples = tsamples + ';' + F[10]
                         newReadNums = treadNums + ';' + F[11]
                     
-                        if F[7] < inseqSize:
+                        if len(F[7]) < len(inseq):
                             mergedBedpeInfo[newKey] = '\t'.join([newSamples, newReadNums])
                             delList.append(key)
                         else:
@@ -86,7 +85,7 @@ def organizeControl(inputFilePath, outputFilePath, check_margin_size, f_insert_s
 
     for key in sorted(mergedBedpeInfo):
 
-        tchr1, tstart1, tend1, tchr2, tstart2, tend2, tdir1, tdir2, inseqSize = key.split('\t')
+        tchr1, tstart1, tend1, tchr2, tstart2, tend2, tdir1, tdir2, inseq = key.split('\t')
         tsamples, treadNums = mergedBedpeInfo[key].split('\t')
 
         # treatment for flush!!

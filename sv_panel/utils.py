@@ -5,7 +5,7 @@
 # from header_info import *
 
 from __future__ import print_function
-import sys, os, re
+import sys, os, re, subprocess
 
 possible_chr = [str(x) for x in range(1, 23)] + ['X', 'Y'] + \
                    ["chr" + str(x) for x in range(1, 23)] + ['chrX', 'chrY']

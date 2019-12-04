@@ -38,11 +38,11 @@ def merge_control_main(args):
                         continue
 
                     F = line.rstrip('\n').split('\t')
-                    inseq = F[header_info.inserted_seq] if F[header_info.inserted_seq] != "---" else 0
+                    inseq = F[header_info.inserted_seq] if F[header_info.inserted_seq] != "---" else ''
 
                     print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
                                               F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
-                                              "junction_" + str(num),  inseqLen, \
+                                              "junction_" + str(num),  inseq, \
                                               F[header_info.dir_1], F[header_info.dir_2], label, "1"])
 
                     num = num + 1
@@ -53,7 +53,7 @@ def merge_control_main(args):
     sortBedpe(args.output_file + ".temp", args.output_file + ".temp.sort")
 
     # utils.processingMessage("merging the same junction in the aggregated junction file")
-    organizeControl(args.output_file + ".temp.sort", args.output_file + ".temp.merged", 20, True)
+    organizeControl(args.output_file + ".temp.sort", args.output_file + ".temp.merged", 20)
 
     # utils.processingMessage("sorting the merged junction file")
     sortBedpe(args.output_file + ".temp.merged", args.output_file + ".temp.merged.sort")
