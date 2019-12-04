@@ -1,10 +1,11 @@
 #! /usr/bin/env python
 
+from __future__ import print_function
 import sys, os, re, subprocess, gzip
 import pysam
-from header_info import *
-from utils import header_check, sortBedpe, compress_index_bed
-from mergeFunction import organizeControl
+from .header_info import header_info
+from .utils import header_check, sortBedpe, compress_index_bed
+from .mergeFunction import organizeControl
 
 def merge_control_main(args):
 
@@ -40,10 +41,10 @@ def merge_control_main(args):
                     F = line.rstrip('\n').split('\t')
                     inseq = F[header_info.inserted_seq] if F[header_info.inserted_seq] != "---" else ''
 
-                    print >> hout, '\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
-                                              F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
-                                              "junction_" + str(num),  inseq, \
-                                              F[header_info.dir_1], F[header_info.dir_2], label, "1"])
+                    print('\t'.join([F[header_info.chr_1], str(int(F[header_info.pos_1]) - 1), F[header_info.pos_1], \
+                                        F[header_info.chr_2], str(int(F[header_info.pos_2]) - 1), F[header_info.pos_2], \
+                                        "junction_" + str(num),  inseq, \
+                                        F[header_info.dir_1], F[header_info.dir_2], label, "1"]), file=hout)
 
                     num = num + 1
 
