@@ -69,3 +69,15 @@ def merge_control_main(args):
     subprocess.check_call(["rm", "-rf", args.output_file + ".temp.merged"])
     subprocess.check_call(["rm", "-rf", args.output_file + ".temp.merged.sort"])
 
+
+def convert_control_main(args):
+
+   hout = open(args.output_file, 'w')
+   with gzip.open(args.merged_control, 'rt') as hin:
+        for line in hin:
+            if line.startswith("#"): continue
+            F = line.rstrip('\n').split('\t')
+            l_val = [F[0],F[2],F[8],F[3],F[5],F[9],F[7]]
+            print('\t'.join(l_val), file=hout)
+   hout.close()
+
